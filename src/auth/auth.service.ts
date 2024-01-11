@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -22,7 +23,7 @@ export class AuthService {
     private readonly prismaService: PrismaService,
     private readonly JwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly mailService: MailerService
+    private readonly mailService: MailerService,
   ) {}
 
   async signup(signupDto: SignupDto) {
@@ -66,5 +67,26 @@ export class AuthService {
         email: user.email,
       },
     };
+  }
+
+  async confirmEmail(userId: any) {
+    if (userId.length < 1 || userId === 0) throw new Error("Bad request");
+
+    const existsUser = await this.prismaService.user.findUnique({
+      where: { userId: parseInt(userId) },
+    });
+
+    const user = await this.prismaService.user.update({
+      where: { userId: parseInt(userId) },
+      data: { state: 'active' } as Prisma.UserUpdateInput,
+    });
+
+    return {
+      message: 'Email Confirmed !',
+      data: {
+        user,
+      },
+    };
+    
   }
 }

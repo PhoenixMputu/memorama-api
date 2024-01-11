@@ -1,5 +1,5 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 export class ConfirmEmailDto {
-  @IsEmail()
-  readonly email: string;
+  @IsNotEmpty()
+  readonly userId: number;
 }
