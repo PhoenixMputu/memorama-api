@@ -72,7 +72,7 @@ export class AuthService {
   async confirmEmail(userId: any) {
     if (userId.length < 1 || userId === 0) throw new Error("Bad request");
 
-    const existsUser = await this.prismaService.user.findUnique({
+    await this.prismaService.user.findUnique({
       where: { userId: parseInt(userId) },
     });
 
